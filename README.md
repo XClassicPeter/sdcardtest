@@ -47,8 +47,10 @@ Use this script at your own risk. Ensure that you are testing the correct device
     sudo ./sdcardtest.sh /dev/sdX
     ```
     Replace `/dev/sdX` with the actual device path of your SD card (e.g., `/dev/sde1`).
+   
+    **Warning:** if you select a device (e.g., `/dev/sde`) not a partition (e.g., `/dev/sde1`) the script will erase a partition table and the data. You will have to restore the partition table manually.
 
-3. **View Results**:
+4. **View Results**:
     The script will output the card details, progress during the test, and the estimated real capacity of the card. If a mismatch is detected, it will stop and provide details about the failure.
 
 ## Example Output
