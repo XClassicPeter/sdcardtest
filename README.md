@@ -12,7 +12,7 @@ This script tests and recognizes the real capacity of an SD card, helping to det
 ## Requirements
 
 - Bash (tested on Linux)
-- `dd`, `lsblk`, `blkid`, and `udevadm` utilities
+- `dd`, `lsblk`, `blkid`, `pv` and `udevadm` utilities
 
 ## Usage
 
