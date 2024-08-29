@@ -9,6 +9,17 @@ DEVICE=${1}
 TEMP_FILE="/tmp/sdcard_test_data"
 TEMP_OUTPUT="/tmp/cmp_output"
 
+# Function to check for required tools
+check_dependencies() {
+    local required_tools=("dd" "lsblk" "blkid" "udevadm" "pv" "awk")
+    for tool in "${required_tools[@]}"; do
+        if ! command -v "$tool" &> /dev/null; then
+            echo "Error: Required tool '$tool' is not installed or not in PATH."
+            exit 1
+        fi
+    done
+}
+
 # Function to check if required parameters are provided
 check_parameters() {
     if [[ -z "$DEVICE" ]]; then
@@ -116,6 +127,9 @@ test_offset() {
 }
 
 # --- Main part ---
+
+# Function to check for required tools
+check_dependencies
 
 # Check parameters
 check_parameters
