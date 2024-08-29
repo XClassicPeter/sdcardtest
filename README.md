@@ -18,13 +18,13 @@ This script tests and recognizes the real capacity of an SD card, helping to det
 
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/yourusername/sd-card-tester.git
-    cd sd-card-tester
+    git clone https://github.com/XClassicPeter/sdcardtest
+    cd sdcardtest
     ```
 
 2. **Run the Script**:
     ```bash
-    sudo ./sd_card_test.sh /dev/sdX
+    sudo ./sdcardtest.sh /dev/sdX
     ```
     Replace `/dev/sdX` with the actual device path of your SD card (e.g., `/dev/sde1`).
 
