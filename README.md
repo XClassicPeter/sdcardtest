@@ -4,7 +4,15 @@ This script tests and recognizes the real capacity of an SD card, helping to det
 
 ## Disclaimer
 
-**WARNING**: This script will write to the selected device. This operation may overwrite any existing data on the device. 
+**WARNING**: 
+1. This script will write directly to the selected partition.
+2. This operation WILL OVERWRITE AND DESTROY ALL DATA on the partition.
+3. After the test, the partition will be left in an unusable state and will require reformatting.
+4. You will have to reformat the partition with the selected filesystem type after the test.
+5. If you choose not to reformat, the partition will remain unusable until manually formatted.
+6. Ensure you have backups of any important data before proceeding.
+7. This script should only be used on devices you are willing to completely erase.
+
 Additionally, the script will create a temporary file named `/tmp/sdcard_test_data` and a log file `/tmp/cmp_output`. 
 If these files already exist, they will be overwritten. 
 Please ensure you have backed up any important data before proceeding.
