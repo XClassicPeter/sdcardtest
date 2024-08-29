@@ -40,6 +40,7 @@ Use this script at your own risk. Ensure that you are testing the correct device
     ```bash
     git clone https://github.com/XClassicPeter/sdcardtest
     cd sdcardtest
+    chmode +x sdcardtest.sh
     ```
 
 2. **Run the Script**:
