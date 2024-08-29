@@ -47,13 +47,28 @@ show_card_details() {
 }
 
 confirm_overwrite() {
-    echo "WARNING: This script will write to the device $DEVICE."
-    echo "This operation may overwrite any existing data on the device."
-    echo "Additionally, the script will create a temporary file named '$TEMP_FILE' and a log file '$TEMP_OUTPUT'."
-    echo "If these files already exist, they will be overwritten. Please ensure you have backed up any important data before proceeding."
-    echo "You can exit the script now and modify the paths for the test file and log file directly in the script if needed."
-    read -p "Do you want to continue? (yes/no): " RESPONSE
-    if [[ "$RESPONSE" != "yes" ]]; then
+    local device_type="partition"
+    if [[ "$DEVICE" =~ ^/dev/[a-zA-Z]+$ ]]; then
+        device_type="entire device"
+    fi
+    
+    echo "WARNING:"
+    echo "1. This script will write directly to the $device_type $DEVICE."
+    echo "2. This operation WILL OVERWRITE AND DESTROY ALL DATA on the $device_type."
+    echo "3. After the test, the $device_type will be left in an unusable state and will require reformatting."
+    if [[ "$device_type" == "entire device" ]]; then
+        echo "4. Writing to the entire device will also destroy the partition table."
+        echo "5. You will need to manually recreate the partition table and format the device after the test."
+    else
+        echo "4. You will have to reformat the partition with the selected filesystem type after the test."
+        echo "5. If you choose not to reformat, the partition will remain unusable until manually formatted."
+    fi
+    echo "6. Ensure you have backups of any important data before proceeding."
+    echo "7. This script should only be used on devices you are willing to completely erase."
+    echo
+    echo "Do you understand these risks and wish to proceed?"
+    read -p "Type 'YES' in all caps to continue, or any other input to abort: " RESPONSE
+    if [[ "$RESPONSE" != "YES" ]]; then
         echo "Operation cancelled by the user."
         exit 0
     fi
