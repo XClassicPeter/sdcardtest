@@ -1,20 +1,34 @@
 #!/bin/bash
 
-DEVICE=${1:-"/dev/sde1"}
+# Default Parameters
 CHUNK_SIZE=${CHUNK_SIZE:-$((100*1024*1024))}  # 100MB in bytes
 STEP_SIZE=${STEP_SIZE:-$((4*1024*1024*1024))}  # 4GB in bytes
+
+# User Inputs
+DEVICE=${1}
 TEMP_FILE="/tmp/sdcard_test_data"
+TEMP_OUTPUT="/tmp/cmp_output"
+
+# Function to check if required parameters are provided
+check_parameters() {
+    if [[ -z "$DEVICE" ]]; then
+        echo "Error: No device specified."
+        echo "Usage: $0 <device>"
+        echo "  <device>: Path to the device (e.g., /dev/sde1)"
+        exit 1
+    fi
+}
 
 # Function to handle Ctrl+C
 ctrl_c() {
     echo "Test interrupted by user. Exiting..."
-    rm -f "$TEMP_FILE" /tmp/cmp_output
+    rm -f "$TEMP_FILE" $TEMP_OUTPUT
     exit 2
 }
 
 # Set up the Ctrl+C trap and other exit traps
 trap ctrl_c INT
-trap 'rm -f "$TEMP_FILE" /tmp/cmp_output' EXIT
+trap 'rm -f "$TEMP_FILE" $TEMP_OUTPUT' EXIT
 
 # Function to display card details
 show_card_details() {
@@ -30,6 +44,19 @@ show_card_details() {
     echo "Serial Number: $SERIAL"
     echo "UUID: $UUID"
     echo
+}
+
+confirm_overwrite() {
+    echo "WARNING: This script will write to the device $DEVICE."
+    echo "This operation may overwrite any existing data on the device."
+    echo "Additionally, the script will create a temporary file named '$TEMP_FILE' and a log file '$TEMP_OUTPUT'."
+    echo "If these files already exist, they will be overwritten. Please ensure you have backed up any important data before proceeding."
+    echo "You can exit the script now and modify the paths for the test file and log file directly in the script if needed."
+    read -p "Do you want to continue? (yes/no): " RESPONSE
+    if [[ "$RESPONSE" != "yes" ]]; then
+        echo "Operation cancelled by the user."
+        exit 0
+    fi
 }
 
 # Function to read reported capacity
@@ -55,12 +82,12 @@ test_offset() {
     # Read back and compare with progress reporting
     echo "Reading back and comparing..."
     dd if=$DEVICE bs=1M count=100 skip=$(($offset / 1024 / 1024)) iflag=direct 2>/dev/null | \
-    pv -s 100M | cmp -l "$TEMP_FILE" - > /tmp/cmp_output
+    pv -s 100M | cmp -l "$TEMP_FILE" - > $TEMP_OUTPUT
 
-    if [ -s /tmp/cmp_output ]; then
+    if [ -s $TEMP_OUTPUT ]; then
         echo "FAILED - Data mismatch detected"
         echo "First 5 mismatches:"
-        head -n 5 /tmp/cmp_output | while read line; do
+        head -n 5 $TEMP_OUTPUT | while read line; do
             byte_offset=$(echo $line | awk '{print $1}')
             expected=$(echo $line | awk '{print $2}')
             actual=$(echo $line | awk '{print $3}')
@@ -73,6 +100,11 @@ test_offset() {
     fi
 }
 
+# --- Main part ---
+
+# Check parameters
+check_parameters
+
 # Check if the device exists
 if [ ! -b "$DEVICE" ]; then
     echo "Error: Device $DEVICE does not exist or is not a block device."
@@ -81,6 +113,9 @@ fi
 
 # Display card details
 show_card_details
+
+# Confirm overwrite
+confirm_overwrite
 
 # Get and display reported capacity
 reported_capacity=$(get_reported_capacity)
