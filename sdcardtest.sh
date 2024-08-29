@@ -54,8 +54,8 @@ test_offset() {
 
     # Read back and compare with progress reporting
     echo "Reading back and comparing..."
-    dd if=$DEVICE bs=1M count=100 skip=$(($offset / 1024 / 1024)) iflag=direct status=progress 2>/dev/null | \
-    cmp -l "$TEMP_FILE" - > /tmp/cmp_output
+    dd if=$DEVICE bs=1M count=100 skip=$(($offset / 1024 / 1024)) iflag=direct 2>/dev/null | \
+    pv -s 100M | cmp -l "$TEMP_FILE" - > /tmp/cmp_output
 
     if [ -s /tmp/cmp_output ]; then
         echo "FAILED - Data mismatch detected"
