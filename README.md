@@ -2,6 +2,18 @@
 
 This script tests and recognizes the real capacity of an SD card, helping to detect fake SD cards that report a higher capacity than they actually have. It writes random data to the card, reads it back, and checks for mismatches to identify potential issues. The script also displays essential card details, including the serial number and UUID, to ensure that the correct device is being tested.
 
+## Disclaimer
+
+**WARNING**: This script will write to the selected device. This operation may overwrite any existing data on the device. 
+Additionally, the script will create a temporary file named `/tmp/sdcard_test_data` and a log file `/tmp/cmp_output`. 
+If these files already exist, they will be overwritten. 
+Please ensure you have backed up any important data before proceeding.
+You can modify the paths for the test file and log file directly in the script if needed.
+
+Use this script at your own risk. Ensure that you are testing the correct device to avoid accidental data loss.
+
+---
+
 ## Features
 
 - **Detect Fake SD Cards**: Identifies SD cards with falsely reported capacities by comparing written and read data.
@@ -71,5 +83,3 @@ If you encounter any problems, please create an issue on GitHub.
 ## Acknowledgments
 
 Special thanks to the open-source community for providing the tools and utilities that made this project possible.
-
-## Disclaimer: Use this script at your own risk. Ensure that you are testing the correct device to avoid accidental data loss.
