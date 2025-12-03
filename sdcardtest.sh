@@ -87,7 +87,7 @@ confirm_overwrite() {
 
 # Function to read reported capacity
 get_reported_capacity() {
-    echo $(lsblk -bno SIZE $DEVICE)
+    lsblk -bno SIZE "$DEVICE" | head -1
 }
 
 # Function to test the offset
